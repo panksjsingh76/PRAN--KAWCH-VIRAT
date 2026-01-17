@@ -3,102 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIRAAT SUPREME GUARD</title>
+    <title>VIRAAT: THE SUPREME GUARD</title>
     <style>
-        body { background: #000; color: #FFD700; font-family: sans-serif; text-align: center; margin: 0; padding: 10px; }
-        .card { border: 2px solid #FFD700; padding: 15px; margin-bottom: 15px; border-radius: 15px; background: #111; box-shadow: 0 0 10px gold; }
-        input { width: 90%; padding: 12px; margin: 8px 0; background: #222; color: white; border: 1px solid gold; border-radius: 8px; font-size: 16px; }
-        button { background: gold; color: black; border: none; padding: 15px; border-radius: 10px; font-weight: bold; width: 95%; cursor: pointer; margin: 5px 0; font-size: 18px; }
-        .sos-btn { background: #f00 !important; color: #fff !important; }
-        #resBox { color: #fff; text-align: left; padding: 15px; border-top: 1px dashed gold; margin-top: 10px; line-height: 1.6; font-weight: bold; background: #1a1a1a; border-radius: 10px; }
-        #preview { max-width: 100%; border-radius: 10px; margin-top: 10px; display: none; border: 1px solid gold; }
-        .cam-label { display: block; background: #222; padding: 15px; border: 2px dashed gold; border-radius: 10px; cursor: pointer; color: gold; font-weight: bold; }
+        :root { --gold: #FFD700; --red: #FF0000; --bg: #0a0a0a; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .shield-box { border: 3px solid var(--gold); border-radius: 20px; padding: 20px; background: #111; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); max-width: 500px; margin: auto; }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-size: 24px; }
+        .cam-btn { background: var(--gold); color: black; border: none; padding: 18px; border-radius: 12px; font-weight: bold; width: 100%; font-size: 18px; cursor: pointer; margin-top: 15px; }
+        #preview { width: 100%; border-radius: 15px; margin-top: 15px; display: none; border: 2px solid var(--gold); }
+        #status { margin-top: 15px; font-weight: bold; color: var(--gold); min-height: 50px; text-align: left; background: #000; padding: 10px; border-radius: 8px; border: 1px dashed var(--gold); }
+        .footer { margin-top: 30px; font-size: 12px; color: #666; }
     </style>
 </head>
 <body>
-    <h1>🛡️ VIRAAT SUPREME GUARD 🛡️</h1>
 
-    <div class="card">
-        <h2>🧠 ऑल-इन-वन सुरक्षा केंद्र</h2>
-        <label class="cam-label" for="camInp">📸 फोटो लें (इलेक्ट्रॉनिक/खतरा/हेल्थ)</label>
-        <input type="file" id="camInp" accept="image/*" capture="environment" style="display:none;">
-        <img id="preview">
-        <input type="number" id="pulse" placeholder="पल्स रेट यहाँ लिखें (जैसे: 72)">
-        <input type="text" id="userMsg" placeholder="सवाल यहाँ पूछें...">
-        <button onclick="viraatAction()">विराट: जांच शुरू करें</button>
-        <div id="resBox">पंकज महाराज, आदेश दें! मैं तैयार हूँ।</div>
+    <div class="shield-box">
+        <h1>🛡️ VIRAAT SUPREME 🛡️</h1>
+        <p style="color: #ccc;">पंकज महाराज का डिजिटल कवच</p>
+
+        <label for="camera" class="cam-btn">📸 फोटो खींचें और जांचें</label>
+        <input type="file" id="camera" accept="image/*" capture="environment" style="display: none;">
+        
+        <img id="preview" alt="Scan Preview">
+        
+        <div id="status">प्रणाम महाराज! मैं तैनात हूँ। कृपया किसी इलेक्ट्रॉनिक सामान या सुरक्षा जांच के लिए फोटो लें।</div>
+
+        <button onclick="sosAction()" class="cam-btn" style="background: var(--red); color: white; margin-top: 20px;">🚨 SOS: मदद बुलाएँ</button>
     </div>
 
-    <div class="card">
-        <button class="sos-btn" onclick="sosMe()">🚨 SOS: परिवार को लोकेशन भेजें</button>
-        <div id="qData" style="margin-top:10px;">🌍 लाइव भूकंप मॉनिटर सक्रिय...</div>
-    </div>
+    <p class="footer">Privacy Protected | Powered by Pankaj Publication Bsf</p>
 
     <script>
         const API_KEY = "AIzaSyBLWi0O6Z6BS7rbmYpzCg3MCkIcN91ZN0Y";
-        let base64Img = "";
+        const camInput = document.getElementById('camera');
+        const preview = document.getElementById('preview');
+        const status = document.getElementById('status');
 
-        document.getElementById('camInp').onchange = function(e) {
+        camInput.onchange = async (e) => {
             const file = e.target.files[0];
-            const prev = document.getElementById('preview');
-            prev.src = URL.createObjectURL(file);
-            prev.style.display = 'block';
+            if (!file) return;
+
+            // फोटो प्रीव्यू दिखाएँ
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            status.innerText = "विराट विश्लेषण कर रहा है... कृपया प्रतीक्षा करें ⏳";
+
+            // इमेज को बेस64 में बदलें
             const reader = new FileReader();
-            reader.onloadend = () => { base64Img = reader.result.split(',')[1]; };
             reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+                const base64Data = reader.result.split(',')[1];
+                
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: "इस फोटो को देखें। अगर यह इलेक्ट्रॉनिक सामान है तो खराबी बताएं, अगर स्वास्थ्य (चोट/बीमारी) है तो उपचार बताएं, अगर कोई खतरा है तो सुरक्षा सलाह दें। पंकज महाराज को फौजी लहजे में हिंदी में जवाब दें।" },
+                                    { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+                                ]
+                            }]
+                        })
+                    });
+
+                    const data = await response.json();
+                    if(data.candidates && data.candidates[0].content) {
+                        status.innerText = data.candidates[0].content.parts[0].text;
+                    } else {
+                        status.innerText = "महाराज, संपर्क में अस्थायी बाधा है। कृपया दोबारा कोशिश करें।";
+                    }
+                } catch (error) {
+                    status.innerText = "सिस्टम एरर: इंटरनेट चेक करें। मैं आपकी लाज रखने की पूरी कोशिश कर रहा हूँ।";
+                }
+            };
         };
 
-        async function viraatAction() {
-            const p = document.getElementById('pulse').value;
-            const msg = document.getElementById('userMsg').value;
-            const res = document.getElementById('resBox');
-            
-            res.innerHTML = "विराट विश्लेषण कर रहा है... ⏳";
-
-            // 1. हेल्थ चेक (बिना इंटरनेट के तुरंत काम करेगा)
-            let localResponse = "";
-            if (p !== "") {
-                if (p < 60) localResponse = "💓 पल्स कम है: महाराज, तुरंत आराम करें और थोड़ा नमक-पानी लें।";
-                else if (p >= 60 && p <= 100) localResponse = "✅ पल्स सामान्य: आप एकदम दुरुस्त हैं, महाराज!";
-                else localResponse = "⚠️ पल्स तेज़ है: शांत बैठें, गहरी सांस लें।";
-            }
-
-            // 2. AI को कॉल करना
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: (msg || "इस फोटो की जांच करें") + " (जवाब हिंदी में दें)" },
-                                ...(base64Img ? [{ inline_data: { mime_type: "image/jpeg", data: base64Img } }] : [])
-                            ]
-                        }]
-                    })
-                });
-                const data = await response.json();
-                const aiText = data.candidates[0].content.parts[0].text;
-                res.innerHTML = (localResponse ? localResponse + "<br><br><b>विराट की रिपोर्ट:</b><br>" : "") + aiText;
-            } catch (err) {
-                // अगर इंटरनेट नहीं है या API फेल है, तो भी हेल्थ जवाब देगा
-                res.innerHTML = localResponse || "इंटरनेट या API में समस्या है। कृपया अपना इंटरनेट चेक करें या थोड़ी देर बाद प्रयास करें।";
-            }
-        }
-
-        function sosMe() {
+        function sosAction() {
             navigator.geolocation.getCurrentPosition(pos => {
-                let url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                window.open(`https://wa.me/?text=Emergency! मेरी लोकेशन: ${url}`);
+                const mapLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                window.open(`https://wa.me/?text=Emergency! मेरी लोकेशन: ${mapLink}`);
             });
         }
-
-        async function getQuake() {
-            const r = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson');
-            const d = await r.json();
-            document.getElementById('qData').innerText = d.features.length > 0 ? "⚠️ Alert: " + d.features[0].properties.place : "✅ अभी सब शांत है।";
-        }
-        getQuake();
     </script>
 </body>
 </html>
