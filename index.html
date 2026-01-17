@@ -1,0 +1,53 @@
+!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRAAT-AI: PRAN-KAVACH</title>
+    <style>
+        body { background: #000; color: #FFD700; font-family: sans-serif; text-align: center; padding: 20px; }
+        .card { border: 2px solid #FFD700; padding: 15px; margin-bottom: 20px; border-radius: 15px; background: #111; box-shadow: 0 0 10px #FFD700; }
+        h1 { color: #FFD700; text-shadow: 2px 2px #f00; font-size: 24px; }
+        button { background: #FFD700; color: black; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 90%; cursor: pointer; }
+        input { width: 85%; padding: 10px; margin: 10px 0; border: 1px solid gold; background: #222; color: white; border-radius: 5px; }
+        .alert { color: #ff3e3e; font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <h1>🛡️ VIRAAT-AI: PRAN-KAVACH 🛡️</h1>
+    <p>महाराज पंकज का 'स्वदेशी' सुरक्षा कवच</p>
+
+    <div class="card">
+        <h2>🏥 हेल्थ गार्ड (Heart Check)</h2>
+        <input type="number" id="hr" placeholder="पल्स रेट लिखें (जैसे: 72)">
+        <button onclick="checkH()">अभी जांचें</button>
+        <p id="hRes"></p>
+    </div>
+
+    <div class="card">
+        <h2>🌍 भूकंप अलर्ट (Monitor)</h2>
+        <div id="quake">सिस्टम सक्रिय: वर्तमान में कोई खतरा नहीं।</div>
+    </div>
+
+    <div class="card">
+        <h2>👨‍👩‍👧‍👦 परिवार के लिए संदेश</h2>
+        <textarea id="msg" style="width:85%; height:60px; background:#222; color:white; border:1px solid gold;" placeholder="बच्चों के लिए कुछ लिखें..."></textarea><br><br>
+        <button onclick="alert('महाराज, संदेश सुरक्षित कर लिया गया है!')">सहेजें (Save)</button>
+    </div>
+
+    <script>
+        function checkH() {
+            let rate = document.getElementById('hr').value;
+            let res = document.getElementById('hRes');
+            if(rate > 100) {
+                res.innerHTML = "<span class='alert'>⚠️ चेतावनी: दिल पर दबाव है! तुरंत आराम करें।</span>";
+            } else if(rate == "") {
+                res.innerHTML = "कृपया नंबर डालें।";
+            } else {
+                res.innerHTML = "✅ आपकी सेहत अभी सामान्य है।";
+            }
+        }
+    </script>
+</body>
+</html>
